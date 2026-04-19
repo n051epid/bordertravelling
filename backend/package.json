@@ -1,0 +1,27 @@
+{
+  "name": "bordertravelling-backend",
+  "version": "1.0.0",
+  "description": "Backend API for Border Travelling app",
+  "main": "dist/app.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/app.js",
+    "dev": "tsx watch src/app.ts"
+  },
+  "dependencies": {
+    "fastify": "^4.28.1",
+    "@fastify/jwt": "^8.0.1",
+    "@fastify/multipart": "^8.3.1",
+    "pg": "^8.12.0",
+    "bcrypt": "^5.1.1",
+    "exif-parser": "^0.1.12",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.14.10",
+    "@types/pg": "^8.11.6",
+    "@types/bcrypt": "^5.0.2",
+    "typescript": "^5.5.3",
+    "tsx": "^4.16.2"
+  }
+}

@@ -1,0 +1,180 @@
+{
+  "type": "excalidraw",
+  "version": 2,
+  "source": "bordertravelling-mvp-design",
+  "elements": [
+    {
+      "id": "page-landing",
+      "type": "rectangle",
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 844,
+      "fill": "#ffffff",
+      "stroke": "#e0e0e0"
+    },
+    {
+      "id": "nav-bar-landing",
+      "type": "rectangle",
+      "x": 0,
+      "y": 0,
+      "width": 390,
+      "height": 60,
+      "fill": "#1a1a2e"
+    },
+    {
+      "id": "logo-text",
+      "type": "text",
+      "x": 20,
+      "y": 18,
+      "text": "Bordertravelling",
+      "fontSize": 18,
+      "fill": "#ffffff"
+    },
+    {
+      "id": "nav-auth",
+      "type": "text",
+      "x": 300,
+      "y": 18,
+      "text": "登录 | 注册",
+      "fontSize": 14,
+      "fill": "#ffffff"
+    },
+    {
+      "id": "hero-title",
+      "type": "text",
+      "x": 20,
+      "y": 120,
+      "text": "环中国边境线旅行记录",
+      "fontSize": 24,
+      "fill": "#1a1a2e",
+      "fontWeight": "bold"
+    },
+    {
+      "id": "hero-subtitle",
+      "type": "text",
+      "x": 20,
+      "y": 160,
+      "text": "验证你的足迹，获得专属成就证书",
+      "fontSize": 14,
+      "fill": "#666666"
+    },
+    {
+      "id": "cta-button",
+      "type": "rectangle",
+      "x": 20,
+      "y": 210,
+      "width": 160,
+      "height": 48,
+      "fill": "#e94560",
+      "borderRadius": 8
+    },
+    {
+      "id": "cta-text",
+      "type": "text",
+      "x": 55,
+      "y": 228,
+      "text": "开始你的旅程",
+      "fontSize": 16,
+      "fill": "#ffffff",
+      "fontWeight": "bold"
+    },
+    {
+      "id": "routes-title",
+      "type": "text",
+      "x": 20,
+      "y": 300,
+      "text": "三条传奇边境线",
+      "fontSize": 18,
+      "fill": "#1a1a2e",
+      "fontWeight": "bold"
+    },
+    {
+      "id": "route-g219",
+      "type": "rectangle",
+      "x": 20,
+      "y": 340,
+      "width": 100,
+      "height": 100,
+      "fill": "#16213e",
+      "borderRadius": 8
+    },
+    {
+      "id": "route-g219-text",
+      "type": "text",
+      "x": 45,
+      "y": 365,
+      "text": "G219",
+      "fontSize": 20,
+      "fill": "#ffffff",
+      "fontWeight": "bold"
+    },
+    {
+      "id": "route-g219-km",
+      "type": "text",
+      "x": 45,
+      "y": 395,
+      "text": "10978km",
+      "fontSize": 12,
+      "fill": "#a0a0a0"
+    },
+    {
+      "id": "route-g331",
+      "type": "rectangle",
+      "x": 135,
+      "y": 340,
+      "width": 100,
+      "height": 100,
+      "fill": "#0f3460",
+      "borderRadius": 8
+    },
+    {
+      "id": "route-g331-text",
+      "type": "text",
+      "x": 155,
+      "y": 365,
+      "text": "G331",
+      "fontSize": 20,
+      "fill": "#ffffff",
+      "fontWeight": "bold"
+    },
+    {
+      "id": "route-g331-km",
+      "type": "text",
+      "x": 155,
+      "y": 395,
+      "text": "573km",
+      "fontSize": 12,
+      "fill": "#a0a0a0"
+    },
+    {
+      "id": "route-g228",
+      "type": "rectangle",
+      "x": 250,
+      "y": 340,
+      "width": 100,
+      "height": 100,
+      "fill": "#533483",
+      "borderRadius": 8
+    },
+    {
+      "id": "route-g228-text",
+      "type": "text",
+      "x": 275,
+      "y": 365,
+      "text": "G228",
+      "fontSize": 20,
+      "fill": "#ffffff",
+      "fontWeight": "bold"
+    },
+    {
+      "id": "route-g228-km",
+      "type": "text",
+      "x": 275,
+      "y": 395,
+      "text": "2028km",
+      "fontSize": 12,
+      "fill": "#a0a0a0"
+    }
+  ]
+}
