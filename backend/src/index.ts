@@ -7,7 +7,11 @@ const fastify = Fastify({
   logger: true,
 });
 
-await fastify.register(cors, { origin: true });
+// Allow both local development and production frontend
+const corsOrigins = process.env.NODE_ENV === 'production'
+  ? ['https://border.qinglv.online', 'https://www.border.qinglv.online']
+  : true;
+await fastify.register(cors, { origin: corsOrigins });
 await fastify.register(jwt, { secret: process.env.JWT_SECRET || 'supersecretkey' });
 
 // JWT authenticate decorator

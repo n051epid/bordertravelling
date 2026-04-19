@@ -11,7 +11,7 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
 // Default export for backward compatibility (login page uses api.post etc)
 export const api = ky.create({
-  prefix: '/api',
+  prefix: `${API_BASE}/api`,
   hooks: {
     beforeRequest: [
       ({ request }) => {
