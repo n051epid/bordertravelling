@@ -1,4 +1,4 @@
-import Fastify from 'fastify';
+import Fastify, { FastifyRequest, FastifyReply } from 'fastify';
 import cors from '@fastify/cors';
 import jwt from '@fastify/jwt';
 import multipart from '@fastify/multipart';
@@ -9,6 +9,15 @@ const fastify = Fastify({
 
 await fastify.register(cors, { origin: true });
 await fastify.register(jwt, { secret: process.env.JWT_SECRET || 'supersecretkey' });
+
+// JWT authenticate decorator
+fastify.decorate('authenticate', async function (request: FastifyRequest, reply: FastifyReply) {
+  try {
+    await request.jwtVerify();
+  } catch (err) {
+    reply.status(401).send({ error: 'Unauthorized' });
+  }
+});
 await fastify.register(multipart, { limits: { fileSize: 50 * 1024 * 1024 } });
 
 fastify.get('/health', async () => ({ status: 'ok' }));

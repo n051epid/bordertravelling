@@ -1,11 +1,22 @@
 import ky from 'ky';
 
 export const api = ky.create({
-  prefix: 'http://localhost:3002',
-  credentials: 'include',
+  baseUrl: 'http://localhost:3000',
+  prefix: '/api',
+  hooks: {
+    beforeRequest: [
+      ({ request }) => {
+        const token =
+          typeof window !== 'undefined' ? localStorage.getItem('auth-token') : null;
+        if (token) {
+          request.headers.set('Authorization', `Bearer ${token}`);
+        }
+      },
+    ],
+  },
 });
 
 export type ApiError = {
-  message: string;
-  code?: string;
+  error?: string;
+  message?: string;
 };
