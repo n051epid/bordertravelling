@@ -41,7 +41,9 @@ fastify.register(routesRoutes.default, { prefix: '/api/routes' });
 
 const start = async () => {
   try {
-    await fastify.listen({ port: 3000, host: '0.0.0.0' });
+    const PORT = Number(process.env.PORT) || 3000;
+const HOST = process.env.HOST || '0.0.0.0';
+await fastify.listen({ port: PORT, host: HOST });
     console.log('Server running at http://localhost:3000');
   } catch (err) {
     fastify.log.error(err);
