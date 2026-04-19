@@ -1,0 +1,20 @@
+{
+  "name": "bordertravelling",
+  "version": "0.1.0",
+  "private": true,
+  "description": "环中国边境线旅行记录平台",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev:frontend": "npm -w frontend run dev",
+    "dev:backend": "npm -w backend run dev",
+    "dev": "npm -w frontend run dev & npm -w backend run dev",
+    "build": "npm -w frontend run build & npm -w backend run build",
+    "db:generate": "npm -w backend run db:generate",
+    "db:migrate": "npm -w backend run db:migrate",
+    "db:seed": "npm -w backend run db:seed",
+    "lint": "npm -w frontend run lint & npm -w backend run lint"
+  }
+}
