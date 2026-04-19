@@ -8,11 +8,17 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 
-// Route approximate center coordinates and colors
+// Dynamic import to avoid SSR issues with Leaflet
+const MapView = dynamic(() => import('@/components/map/map-view'), {
+  ssr: false,
+  loading: () => <Skeleton className="h-full w-full rounded-lg" />,
+});
+
+// Route configuration: colors and approximate center points for each route
 const ROUTE_CONFIG: Record<string, { color: string; center: [number, number]; zoom: number; description: string }> = {
   G219: {
     color: '#e53e3e',
-    center: [28.0, 105.0],
+    center: [28.0, 98.0],
     zoom: 5,
     description: '中国最长边境公路，全长约10,000公里',
   },
@@ -54,11 +60,22 @@ function MapContent() {
     load();
   }, []);
 
+  // Get photos with GPS coordinates
+  const photosWithGps = photos.filter((p) => p.latitude && p.longitude);
+
+  // Build markers from photos
+  const markers = photosWithGps.map((p) => ({
+    id: p.id,
+    lat: p.latitude!,
+    lng: p.longitude!,
+    label: p.originalName,
+  }));
+
   if (loading) {
     return (
       <div className="h-[calc(100vh-8rem)] flex items-center justify-center">
         <div className="space-y-4 w-full max-w-md p-4">
-          <Skeleton className="h-64 w-full" />
+          <Skeleton className="h-96 w-full rounded-lg" />
           <div className="space-y-2">
             <Skeleton className="h-4 w-3/4" />
             <Skeleton className="h-4 w-1/2" />
@@ -68,11 +85,21 @@ function MapContent() {
     );
   }
 
+  const selectedConfig = selectedRoute ? ROUTE_CONFIG[selectedRoute.routeNumber] : null;
+
   return (
     <div className="h-[calc(100vh-8rem)] flex flex-col lg:flex-row gap-4">
-      {/* Map container */}
-      <div className="flex-1 relative">
-        <div id="map" className="h-full rounded-lg overflow-hidden bg-slate-100 min-h-[400px]" />
+      {/* Map */}
+      <div className="flex-1 relative min-h-[400px]">
+        <MapView
+          center={selectedConfig?.center || [35.0, 120.0]}
+          zoom={selectedConfig?.zoom || 5}
+          markers={markers}
+        />
+        {/* Tencent Maps attribution note */}
+        <div className="absolute bottom-1 right-2 text-xs text-muted-foreground z-[1000]">
+          地图审图号: GS(2022)2885 | OSM
+        </div>
       </div>
 
       {/* Sidebar */}
@@ -95,12 +122,14 @@ function MapContent() {
                 >
                   <div className="flex items-center justify-between">
                     <span className="font-medium">{route.routeNumber}</span>
-                    <Badge
-                      variant="outline"
-                      style={{ borderColor: config?.color, color: config?.color }}
-                    >
-                      {route.totalLength?.toLocaleString()} km
-                    </Badge>
+                    {config && (
+                      <Badge
+                        variant="outline"
+                        style={{ borderColor: config.color, color: config.color }}
+                      >
+                        {route.totalLength?.toLocaleString()} km
+                      </Badge>
+                    )}
                   </div>
                   <p className="text-sm text-muted-foreground mt-1">{route.name}</p>
                 </div>
@@ -110,12 +139,10 @@ function MapContent() {
         </Card>
 
         {/* Selected route details */}
-        {selectedRoute && (
+        {selectedRoute && selectedConfig && (
           <Card className="p-4">
             <h3 className="font-semibold mb-2">{selectedRoute.name}</h3>
-            <p className="text-sm text-muted-foreground mb-3">
-              {selectedRoute.description}
-            </p>
+            <p className="text-sm text-muted-foreground mb-3">{selectedConfig.description}</p>
             <div className="grid grid-cols-2 gap-2 text-sm">
               <div>
                 <span className="text-muted-foreground">起点：</span>
@@ -129,15 +156,20 @@ function MapContent() {
           </Card>
         )}
 
-        {/* Photo count */}
+        {/* Photo stats */}
         <Card className="p-4">
           <div className="flex items-center justify-between">
             <span className="text-sm text-muted-foreground">我的照片</span>
             <Badge variant="secondary">{photos.length}</Badge>
           </div>
-          {photos.length > 0 && (
+          {photosWithGps.length > 0 && (
             <p className="text-xs text-muted-foreground mt-1">
-              {photos.filter((p) => p.latitude && p.longitude).length} 张带GPS定位
+              {photosWithGps.length} 张带GPS定位
+            </p>
+          )}
+          {photosWithGps.length === 0 && (
+            <p className="text-xs text-muted-foreground mt-1">
+              上传带GPS的照片，即可在地图上显示位置
             </p>
           )}
         </Card>
@@ -146,20 +178,10 @@ function MapContent() {
   );
 }
 
-// Dynamic import to avoid SSR issues with Leaflet
-const MapPageContent = dynamic(() => Promise.resolve(MapContent), {
-  ssr: false,
-  loading: () => (
-    <div className="h-[calc(100vh-8rem)] flex items-center justify-center">
-      <p className="text-muted-foreground">加载地图中...</p>
-    </div>
-  ),
-});
-
 export default function MapPage() {
   return (
     <div className="container py-4">
-      <MapPageContent />
+      <MapContent />
     </div>
   );
 }

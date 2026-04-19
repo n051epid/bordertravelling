@@ -1,0 +1,101 @@
+name: Build and Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '20'
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+          cache-dependency-path: |
+            frontend/package-lock.json
+            backend/package-lock.json
+
+      # Build Backend
+      - name: Install backend dependencies
+        run: npm install --prefix backend
+
+      - name: Build backend
+        run: npm run build --prefix backend
+
+      # Build Frontend
+      - name: Install frontend dependencies
+        run: npm install --prefix frontend
+
+      - name: Build frontend
+        run: npm run build --prefix frontend
+        env:
+          NEXT_PUBLIC_API_URL: ${{ secrets.NEXT_PUBLIC_API_URL }}
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-artifacts
+          path: |
+            backend/dist
+            backend/package.json
+            backend/scripts
+            frontend/.next
+            frontend/package.json
+            frontend/public
+            frontend/.env.local
+          retention-days: 7
+
+  deploy:
+    name: Deploy to Server
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build-artifacts
+          path: ./artifacts
+
+      - name: Setup SSH keys
+        uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.SERVER_SSH_KEY }}
+
+      - name: Deploy via SSH
+        run: |
+          echo "${{ secrets.SERVER_HOST_KEY }}" > ~/.ssh/known_hosts
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_HOST }} '
+            set -e
+            APP_DIR="/data/apps/bordertravelling"
+            mkdir -p $APP_DIR/{backend,frontend}/uploads
+
+            # Stop old services
+            pm2 stop border-backend border-frontend 2>/dev/null || true
+
+            # Backup current version
+            [ -d "$APP_DIR/backend/dist" ] && cp -r $APP_DIR/backend/dist $APP_DIR/backend/dist.bak
+
+            # Deploy backend
+            cp -r artifacts/* $APP_DIR/
+
+            # Install deps if needed
+            cd $APP_DIR/backend && npm install --omit=dev
+
+            # Run DB migrations
+            cd $APP_DIR/backend && npm run db:push
+
+            # Start services
+            cd $APP_DIR && pm2 start ecosystem.config.js || pm2 restart border-backend border-frontend
+            pm2 save
+          '
